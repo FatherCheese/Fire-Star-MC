@@ -1,0 +1,18 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "jamdoggie.firestarmc.mixins",
+    "compatibilityLevel": "JAVA_8",
+    "server": [
+      "MinecraftServerMixin",
+      "PlayerListMixin",
+      "DimensionMixin",
+      "WorldManagerMixin",
+      "WorldServerMixin",
+      "WorldMixinAccessor",
+      "NetLoginHandlerMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+  }
+}
