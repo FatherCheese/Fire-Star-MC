@@ -6,7 +6,8 @@
   "name": "Fire Star MC",
   "description": "The plugin for a private Minecraft server for Better than Adventure.",
   "authors": [
-    "JamDoggie"
+    "JamDoggie (original dev)",
+		"Cookie Cakes"
   ],
   "contact": {
     "homepage": "",
@@ -25,9 +26,6 @@
 			"jamdoggie.firestarmc.FireStarMC"
 		],
 		"afterGameStart": [
-			"jamdoggie.firestarmc.FireStarMC"
-		],
-		"recipesReady": [
 			"jamdoggie.firestarmc.FireStarMC"
 		]
 	},

@@ -13,7 +13,7 @@ import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
 
-public class FireStarMC implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint {
+public class FireStarMC implements ModInitializer, GameStartEntrypoint {
     public static final String MOD_ID = "firestarmc";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static MinecraftServer mcServer;
@@ -22,8 +22,7 @@ public class FireStarMC implements ModInitializer, GameStartEntrypoint, RecipeEn
 	public static final int multiWorldDefaultWorldIndex = 499;
 
     @Override
-    public void onInitialize()
-	{
+    public void onInitialize() {
         LOGGER.info("Starting Fire Star MC.");
 		worldAPI = new WorldAPI();
 
@@ -33,19 +32,12 @@ public class FireStarMC implements ModInitializer, GameStartEntrypoint, RecipeEn
     }
 
 	@Override
-	public void beforeGameStart()
-	{
+	public void beforeGameStart() {
 
 	}
 
 	@Override
-	public void afterGameStart()
-	{
-	}
-
-	@Override
-	public void onRecipesReady()
-	{
+	public void afterGameStart() {
 
 	}
 }

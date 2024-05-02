@@ -193,7 +193,7 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 		for (CustomWorld customWorld : multiWorldList)
 		{
 			WorldServer world = customWorld.world;
-			world.saveWorld(true, null);
+			world.saveWorld(true, null, true);
 			world.func_30006_w();
 		}
 	}
