@@ -6,12 +6,9 @@ import jamdoggie.firestarmc.multiworld.CustomWorld;
 import jamdoggie.firestarmc.multiworld.RegisteredMultiWorld;
 import net.minecraft.core.net.PropertyManager;
 import net.minecraft.core.net.packet.Packet4UpdateTime;
-import net.minecraft.core.world.Dimension;
-import net.minecraft.core.world.ProgressListener;
 import net.minecraft.core.world.chunk.ChunkCoordinates;
 import net.minecraft.core.world.save.ISaveFormat;
 import net.minecraft.core.world.save.SaveHandlerServer;
-import net.minecraft.core.world.save.mcregion.SaveFormat19134;
 import net.minecraft.core.world.type.WorldType;
 import net.minecraft.core.world.type.WorldTypes;
 import net.minecraft.server.MinecraftServer;
@@ -20,12 +17,10 @@ import net.minecraft.server.net.PlayerList;
 import net.minecraft.server.player.PlayerManager;
 import net.minecraft.server.world.WorldManager;
 import net.minecraft.server.world.WorldServer;
-import net.minecraft.server.world.WorldServerMulti;
 import org.apache.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -74,45 +69,45 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 	protected abstract void clearCurrentTask();
 
 	@Shadow
-	private int deathTime;
+	int deathTime;
+
 	@Unique
 	public ArrayList<CustomWorld> multiWorldList = new ArrayList<>();
 
-	private int multiWorldIndex = FireStarMC.worldIndexOffset;
+	@Unique
+	private final int multiWorldIndex = FireStarMC.worldIndexOffset;
 
 	@Inject(method = "startServer", at =
 	@At(value = "INVOKE",
 		target = "Lnet/minecraft/server/MinecraftServer;initWorld(Lnet/minecraft/core/world/save/ISaveFormat;Ljava/lang/String;J)V",
 		shift = At.Shift.AFTER))
-	private void startServerMixin(CallbackInfoReturnable<Boolean> cir)
-	{
+	private void startServerMixin(CallbackInfoReturnable<Boolean> cir) {
 		// TODO: load worlds here
-		for (RegisteredMultiWorld savedWorld : FireStarMC.worldAPI.getRegisteredWorlds())
-		{
+		for (RegisteredMultiWorld savedWorld : FireStarMC.worldAPI.getRegisteredWorlds()) {
 			FireStarMC.worldAPI.initCustomWorld(savedWorld);
 		}
 	}
 
 	@Unique
-	public void initMultiWorld(ISaveFormat saveFormat, String worldDirName, long seed, int dimensionId) {
+	public void fire_Star_MC$initMultiWorld(ISaveFormat saveFormat, String worldDirName, long seed, int dimID) {
 		this.convertWorld(saveFormat, worldDirName);
 		SaveHandlerServer saveHandler = new SaveHandlerServer(saveFormat, new File("."), worldDirName, true);
 
 		WorldServer world;
 
-		world = new WorldServer(mixinThis(), saveHandler, worldDirName, dimensionId, WorldTypes.OVERWORLD_AMPLIFIED, seed);
+		world = new WorldServer(thisAs(), saveHandler, worldDirName, dimID, WorldTypes.OVERWORLD_AMPLIFIED, seed);
 
 		int viewDist = propertyManager.getIntProperty("view-distance", 10);
 
 		CustomWorld customWorld = new CustomWorld("testWorld",
 			world,
-			new PlayerManager(mixinThis(), dimensionId, viewDist),
-			new EntityTracker(mixinThis(), dimensionId),
-			dimensionId);
+			new PlayerManager(thisAs(), dimID, viewDist),
+			new EntityTracker(thisAs(), dimID),
+			dimID);
 
 		multiWorldList.add(customWorld);
 
-		world.addListener(new WorldManager(mixinThis(), world));
+		world.addListener(new WorldManager(thisAs(), world));
 		world.difficultySetting = this.difficulty;
 		world.sleepPercent = this.sleepPercentage;
 		world.setAllowedMobSpawns(this.propertyManager.getBooleanProperty("spawn-monsters", true), this.spawnPeacefulMobs);
@@ -120,7 +115,7 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 		int c = 196;
 		long preGenTimeStamp = System.currentTimeMillis();
 
-		System.out.println("Preparing start region for level " + dimensionId);
+		System.out.println("Preparing start region for level " + dimID);
 
 		ChunkCoordinates chunkcoordinates = world.getSpawnPoint();
 
@@ -216,7 +211,7 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 		}
 	}
 
-	public ArrayList<CustomWorld> getCustomWorlds()
+	public ArrayList<CustomWorld> fire_Star_MC$getCustomWorlds()
 	{
 		return multiWorldList;
 	}
@@ -224,10 +219,11 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 	@Inject(method = "startServer", at = @At("HEAD"))
 	private void staticInstanceMixin(CallbackInfoReturnable<Boolean> cir)
 	{
-		FireStarMC.mcServer = mixinThis();
+		FireStarMC.mcServer = thisAs();
 	}
 
-	private MinecraftServer mixinThis()
+	@Unique
+	private MinecraftServer thisAs()
 	{
 		return (MinecraftServer)(Object)this;
 	}

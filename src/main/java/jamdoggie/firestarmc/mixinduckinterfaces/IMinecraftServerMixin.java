@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public interface IMinecraftServerMixin
 {
-	void initMultiWorld(ISaveFormat saveFormat, String worldDirName, long l, int dimensionId);
+	void fire_Star_MC$initMultiWorld(ISaveFormat saveFormat, String worldDirName, long l, int dimensionId);
 	MinecraftServer getInstance();
-	ArrayList<CustomWorld> getCustomWorlds();
+	ArrayList<CustomWorld> fire_Star_MC$getCustomWorlds();
 }

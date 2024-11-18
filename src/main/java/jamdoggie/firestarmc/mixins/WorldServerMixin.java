@@ -1,8 +1,5 @@
 package jamdoggie.firestarmc.mixins;
 
-import jamdoggie.firestarmc.FireStarMC;
-import jamdoggie.firestarmc.mixinduckinterfaces.IMinecraftServerMixin;
-import jamdoggie.firestarmc.multiworld.CustomWorld;
 import net.minecraft.core.world.Dimension;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.save.LevelStorage;
@@ -10,6 +7,7 @@ import net.minecraft.core.world.type.WorldType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.WorldServer;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -33,6 +31,7 @@ public class WorldServerMixin extends World
 			dimension.id = dimensionId;
 	}
 
+	@Unique
 	private World mixinThis()
 	{
 		return (World)(Object)this;

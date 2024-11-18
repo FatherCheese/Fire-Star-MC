@@ -23,7 +23,7 @@ public class WorldManagerMixin
 	@Inject(method = "blockChanged", at = @At("HEAD"), cancellable = true)
 	private void blockChangedMixin(int x, int y, int z, CallbackInfo ci)
 	{
-		for (CustomWorld customWorld : ((IMinecraftServerMixin)mcServer).getCustomWorlds())
+		for (CustomWorld customWorld : ((IMinecraftServerMixin)mcServer).fire_Star_MC$getCustomWorlds())
 		{
 			if (customWorld.world == worldServer)
 			{

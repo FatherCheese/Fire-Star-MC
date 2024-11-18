@@ -8,7 +8,7 @@ public class RegisteredMultiWorld
 
 	public RegisteredMultiWorld(String name, long seed, int dimensionId)
 	{
-		this.name = name;
+		this.name = "firestar_" + name;
 		this.seed = seed;
 		this.dimensionId = dimensionId;
 	}

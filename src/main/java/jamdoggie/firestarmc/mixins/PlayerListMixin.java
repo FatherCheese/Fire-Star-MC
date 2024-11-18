@@ -7,7 +7,6 @@ import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.net.packet.*;
 import net.minecraft.core.world.Dimension;
-import net.minecraft.core.world.PortalHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 import net.minecraft.server.net.PlayerList;
@@ -71,7 +70,7 @@ public abstract class PlayerListMixin
 	}
 
 	@Inject(method = "sendPlayerToOtherDimension", at = @At("HEAD"), cancellable = true)
-	private void sendPlayerToOtherDimensionInject(EntityPlayerMP player, int targetDim, CallbackInfo ci)
+	private void sendPlayerToOtherDimensionInject(EntityPlayerMP player, int targetDim, boolean generatePortal, CallbackInfo ci)
 	{
 		System.out.println("sendPlayerToOtherDimensionInject: " + player + ", " + targetDim);
 		if (targetDim >= FireStarMC.worldIndexOffset || targetDim == FireStarMC.multiWorldDefaultWorldIndex)
@@ -128,7 +127,8 @@ public abstract class PlayerListMixin
 			this.func_28172_a(player);
 
 			player.playerNetServerHandler.teleportAndRotate(player.x, player.y, player.z, player.yRot, player.xRot);
-			player.playerNetServerHandler.sendPacket(new Packet41EntityPlayerGamemode(player.getGamemode().getId()));
+			player.playerNetServerHandler.sendPacket(new Packet41EntityPlayerGamemode(player.id,
+				player.getGamemode().getId()));
 
 			player.setWorld(newWorld);
 
@@ -143,6 +143,6 @@ public abstract class PlayerListMixin
 
 	private ArrayList<CustomWorld> customWorlds()
 	{
-		return ((IMinecraftServerMixin)server).getCustomWorlds();
+		return ((IMinecraftServerMixin)server).fire_Star_MC$getCustomWorlds();
 	}
 }

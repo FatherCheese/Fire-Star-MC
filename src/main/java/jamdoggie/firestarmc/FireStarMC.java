@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.CommandHelper;
 import turniplabs.halplibe.util.GameStartEntrypoint;
-import turniplabs.halplibe.util.RecipeEntrypoint;
 
 
 public class FireStarMC implements ModInitializer, GameStartEntrypoint {
@@ -26,7 +25,7 @@ public class FireStarMC implements ModInitializer, GameStartEntrypoint {
         LOGGER.info("Starting Fire Star MC.");
 		worldAPI = new WorldAPI();
 
-		CommandHelper.Server.createCommand(new TPWorldCommand("tpworld"));
+		CommandHelper.createServerCommand(minecraftAtomicReference -> new TPWorldCommand("tpworld"));
 
 		worldAPI.getRegisteredWorlds().add(new RegisteredMultiWorld("testWorld", "testSeed".hashCode(), worldIndexOffset));
     }
