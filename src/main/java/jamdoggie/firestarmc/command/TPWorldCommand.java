@@ -32,12 +32,13 @@ public class TPWorldCommand extends Command
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
 
 			if (FireStarMC.mcServer.propertyManager.getStringProperty("level-name", "world").equals(strings[0])) {
-				FireStarMC.mcServer.playerList.sendPlayerToOtherDimension(playerMP, FireStarMC.multiWorldDefaultWorldIndex, false);
+				FireStarMC.mcServer.playerList.sendPlayerToOtherDimension(playerMP, FireStarMC.MULTI_WORLD_DEFAULT_WORLD_INDEX, false);
 
 				World world = handler.getWorld(player);
 				ChunkCoordinates pos = world.getSpawnPoint();
 
 				playerMP.playerNetServerHandler.teleportAndRotate((double) pos.x + 0.5, (double) pos.y + 1, (double) pos.z + 0.5, 0.0F, 0.0F);
+				player.absMoveTo((double)pos.x + (double)0.5F, (double)pos.y + (double)0.5F, (double)pos.z + (double)0.5F, 0.0F, 0.0F);
 
 				return true;
 			}
@@ -54,10 +55,11 @@ public class TPWorldCommand extends Command
 					EntityPlayerMP playerMP = (EntityPlayerMP) player;
 
 					FireStarMC.mcServer.playerList.sendPlayerToOtherDimension(playerMP,
-						FireStarMC.worldIndexOffset + i,
+						FireStarMC.WORLD_INDEX_OFFSET + i,
 						false);
 
 					playerMP.playerNetServerHandler.teleportAndRotate((double) pos.x + 0.5, (double) pos.y + 1, (double) pos.z + 0.5, 0.0F, 0.0F);
+					player.absMoveTo((double)pos.x + (double)0.5F, (double)pos.y + (double)0.5F, (double)pos.z + (double)0.5F, 0.0F, 0.0F);
 
 					return true;
 				}

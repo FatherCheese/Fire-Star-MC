@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = WorldServer.class, remap = false)
-public class WorldServerMixin extends World
+public abstract class WorldServerMixin extends World
 {
 	public WorldServerMixin(LevelStorage saveHandler, String name, Dimension dimension, WorldType worldType, long seed)
 	{
@@ -21,19 +21,21 @@ public class WorldServerMixin extends World
 	}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(MinecraftServer minecraftserver, LevelStorage isavehandler, String name, int dimensionId, WorldType worldType, long seed, CallbackInfo ci)
+	private void fire_Star_MC$init(MinecraftServer minecraftserver, LevelStorage isavehandler, String name, int dimensionId, WorldType worldType, long seed, CallbackInfo ci)
 	{
 			System.out.println("Creating fake dimension with id");
 
-			((WorldMixinAccessor)mixinThis()).setDimension(
-				new Dimension("multiworld_" + dimensionId, null, 1.0f, -1));
+			((WorldMixinAccessor) fire_Star_MC$thisAs()).setDimension(new Dimension("multiworld_" + dimensionId,
+				null,
+				1.0f,
+				-1));
 
 			dimension.id = dimensionId;
 	}
 
 	@Unique
-	private World mixinThis()
+	private WorldServer fire_Star_MC$thisAs()
 	{
-		return (World)(Object)this;
+		return (WorldServer)(Object)this;
 	}
 }

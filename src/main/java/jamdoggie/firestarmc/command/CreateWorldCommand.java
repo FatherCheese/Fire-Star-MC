@@ -9,7 +9,7 @@ import net.minecraft.core.net.command.CommandSender;
 
 public class CreateWorldCommand extends Command {
 	public CreateWorldCommand() {
-		super("createworld", "worldcreate");
+		super("createworld", "worldcreate", "cw");
 	}
 
 	public int parseInt(String str) {

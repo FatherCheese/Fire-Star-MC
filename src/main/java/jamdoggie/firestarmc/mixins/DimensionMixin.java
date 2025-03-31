@@ -7,10 +7,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = Dimension.class, remap = false)
-public class DimensionMixin
+public abstract class DimensionMixin
 {
 	@Inject(method = "<init>", at = @At(value = "TAIL"))
-	private void init(String languageKey, Dimension homeDim, float worldScale, int portalBlockId, CallbackInfo ci)
+	private void fire_Star_MC$init(String languageKey, Dimension homeDim, float worldScale, int portalBlockId, CallbackInfo ci)
 	{
 
 	}

@@ -15,6 +15,7 @@ import net.minecraft.server.world.WorldServer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -42,40 +43,40 @@ public abstract class PlayerListMixin
 		value = "INVOKE",
 		target = "Lnet/minecraft/server/net/PlayerList;getPlayerManager(I)Lnet/minecraft/server/player/PlayerManager;",
 		shift = At.Shift.BEFORE))
-	private void func_28172_a_INJECT(EntityPlayerMP player, CallbackInfo ci)
+	private void fire_Star_MC$func_28172_a_INJECT(EntityPlayerMP player, CallbackInfo ci)
 	{
-		for (CustomWorld customWorld : customWorlds())
+		for (CustomWorld customWorld : fire_Star_MC$customWorlds())
 		{
 			customWorld.playerManager.removePlayer(player);
 		}
 	}
 
 	@Inject(method = "getPlayerManager", at = @At("HEAD"), cancellable = true)
-	private void getPlayerManager(int dim, CallbackInfoReturnable<PlayerManager> cir)
+	private void fire_Star_MC$getPlayerManager(int dim, CallbackInfoReturnable<PlayerManager> cir)
 	{
 		// Return our custom world instead of a vanilla dimension.
-		if (dim >= FireStarMC.worldIndexOffset && dim < FireStarMC.worldIndexOffset + customWorlds().size())
+		if (dim >= FireStarMC.WORLD_INDEX_OFFSET && dim < FireStarMC.WORLD_INDEX_OFFSET + fire_Star_MC$customWorlds().size())
 		{
-			cir.setReturnValue(customWorlds().get(dim - FireStarMC.worldIndexOffset).playerManager);
+			cir.setReturnValue(fire_Star_MC$customWorlds().get(dim - FireStarMC.WORLD_INDEX_OFFSET).playerManager);
 		}
 	}
 
 	@Inject(method = "onTick", at = @At("TAIL"))
-	private void onTick(CallbackInfo ci)
+	private void fire_Star_MC$onTick(CallbackInfo ci)
 	{
-		for (CustomWorld customWorld : customWorlds())
+		for (CustomWorld customWorld : fire_Star_MC$customWorlds())
 		{
 			customWorld.playerManager.tick();
 		}
 	}
 
 	@Inject(method = "sendPlayerToOtherDimension", at = @At("HEAD"), cancellable = true)
-	private void sendPlayerToOtherDimensionInject(EntityPlayerMP player, int targetDim, boolean generatePortal, CallbackInfo ci)
+	private void fire_Star_MC$sendPlayerToOtherDimensionInject(EntityPlayerMP player, int targetDim, boolean generatePortal, CallbackInfo ci)
 	{
 		System.out.println("sendPlayerToOtherDimensionInject: " + player + ", " + targetDim);
-		if (targetDim >= FireStarMC.worldIndexOffset || targetDim == FireStarMC.multiWorldDefaultWorldIndex)
+		if (targetDim >= FireStarMC.WORLD_INDEX_OFFSET || targetDim == FireStarMC.MULTI_WORLD_DEFAULT_WORLD_INDEX)
 		{
-			if (targetDim == FireStarMC.multiWorldDefaultWorldIndex)
+			if (targetDim == FireStarMC.MULTI_WORLD_DEFAULT_WORLD_INDEX)
 				targetDim = 0;
 
 			System.out.println("Start of playerlist inject if statement");
@@ -141,7 +142,8 @@ public abstract class PlayerListMixin
 		}
 	}
 
-	private ArrayList<CustomWorld> customWorlds()
+	@Unique
+	private ArrayList<CustomWorld> fire_Star_MC$customWorlds()
 	{
 		return ((IMinecraftServerMixin)server).fire_Star_MC$getCustomWorlds();
 	}

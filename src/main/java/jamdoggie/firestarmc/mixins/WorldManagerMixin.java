@@ -2,6 +2,7 @@ package jamdoggie.firestarmc.mixins;
 
 import jamdoggie.firestarmc.mixinduckinterfaces.IMinecraftServerMixin;
 import jamdoggie.firestarmc.multiworld.CustomWorld;
+import net.minecraft.core.world.LevelListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.WorldManager;
 import net.minecraft.server.world.WorldServer;
@@ -12,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = WorldManager.class, remap = false)
-public class WorldManagerMixin
+public abstract class WorldManagerMixin implements LevelListener
 {
 	@Shadow
 	private MinecraftServer mcServer;
@@ -21,7 +22,7 @@ public class WorldManagerMixin
 	private WorldServer worldServer;
 
 	@Inject(method = "blockChanged", at = @At("HEAD"), cancellable = true)
-	private void blockChangedMixin(int x, int y, int z, CallbackInfo ci)
+	private void fire_Star_MC$blockChangedMixin(int x, int y, int z, CallbackInfo ci)
 	{
 		for (CustomWorld customWorld : ((IMinecraftServerMixin)mcServer).fire_Star_MC$getCustomWorlds())
 		{

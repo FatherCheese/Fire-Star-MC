@@ -4,6 +4,8 @@ import jamdoggie.firestarmc.FireStarMC;
 import jamdoggie.firestarmc.mixinduckinterfaces.IMinecraftServerMixin;
 import jamdoggie.firestarmc.multiworld.CustomWorld;
 import jamdoggie.firestarmc.multiworld.RegisteredMultiWorld;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.net.PropertyManager;
 import net.minecraft.core.net.packet.Packet4UpdateTime;
 import net.minecraft.core.world.chunk.ChunkCoordinates;
@@ -29,7 +31,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.io.File;
 import java.util.ArrayList;
 
-@Mixin(value = net.minecraft.server.MinecraftServer.class, remap = false)
+@Environment(EnvType.SERVER)
+@Mixin(value = MinecraftServer.class, remap = false)
 public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 {
 	@Shadow
@@ -72,16 +75,16 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 	int deathTime;
 
 	@Unique
-	public ArrayList<CustomWorld> multiWorldList = new ArrayList<>();
+	public ArrayList<CustomWorld> fire_Star_MC$multiWorldList = new ArrayList<>();
 
 	@Unique
-	private final int multiWorldIndex = FireStarMC.worldIndexOffset;
+	private final int fire_Star_MC$multiWorldIndex = FireStarMC.WORLD_INDEX_OFFSET;
 
 	@Inject(method = "startServer", at =
 	@At(value = "INVOKE",
 		target = "Lnet/minecraft/server/MinecraftServer;initWorld(Lnet/minecraft/core/world/save/ISaveFormat;Ljava/lang/String;J)V",
 		shift = At.Shift.AFTER))
-	private void startServerMixin(CallbackInfoReturnable<Boolean> cir) {
+	private void fire_Star_MC$startServerMixin(CallbackInfoReturnable<Boolean> cir) {
 		// TODO: load worlds here
 		for (RegisteredMultiWorld savedWorld : FireStarMC.worldAPI.getRegisteredWorlds()) {
 			FireStarMC.worldAPI.initCustomWorld(savedWorld);
@@ -105,7 +108,7 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 			new EntityTracker(thisAs(), dimID),
 			dimID);
 
-		multiWorldList.add(customWorld);
+		fire_Star_MC$multiWorldList.add(customWorld);
 
 		world.addListener(new WorldManager(thisAs(), world));
 		world.difficultySetting = this.difficulty;
@@ -149,11 +152,11 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 	}
 
 	@Inject(method = "getDimensionWorld", at = @At("HEAD"), cancellable = true)
-	private void getDimensionWorldMixin(int dim, CallbackInfoReturnable<WorldServer> cir)
+	private void fire_Star_MC$getDimensionWorldMixin(int dim, CallbackInfoReturnable<WorldServer> cir)
 	{
-		if (dim >= FireStarMC.worldIndexOffset && dim < FireStarMC.worldIndexOffset + multiWorldList.size())
+		if (dim >= FireStarMC.WORLD_INDEX_OFFSET && dim < FireStarMC.WORLD_INDEX_OFFSET + fire_Star_MC$multiWorldList.size())
 		{
-			for (CustomWorld customWorld : multiWorldList)
+			for (CustomWorld customWorld : fire_Star_MC$multiWorldList)
 			{
 				if (customWorld.dimensionId == dim)
 				{
@@ -165,27 +168,27 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 	}
 
 	@Inject(method = "doTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/net/PlayerList;onTick()V", shift = At.Shift.AFTER))
-	private void tickEntityTrackers(CallbackInfo ci)
+	private void fire_Star_MC$tickEntityTrackers(CallbackInfo ci)
 	{
-		for (CustomWorld customWorld : multiWorldList)
+		for (CustomWorld customWorld : fire_Star_MC$multiWorldList)
 		{
 			customWorld.entityTracker.tick();
 		}
 	}
 
 	@Inject(method = "getEntityTracker", at = @At("HEAD"), cancellable = true)
-	private void getEntityTrackerMixin(int i, CallbackInfoReturnable<EntityTracker> cir)
+	private void fire_Star_MC$getEntityTrackerMixin(int i, CallbackInfoReturnable<EntityTracker> cir)
 	{
-		if (i >= FireStarMC.worldIndexOffset && i < FireStarMC.worldIndexOffset + multiWorldList.size())
+		if (i >= FireStarMC.WORLD_INDEX_OFFSET && i < FireStarMC.WORLD_INDEX_OFFSET + fire_Star_MC$multiWorldList.size())
 		{
-			cir.setReturnValue(multiWorldList.get(i - FireStarMC.worldIndexOffset).entityTracker);
+			cir.setReturnValue(fire_Star_MC$multiWorldList.get(i - FireStarMC.WORLD_INDEX_OFFSET).entityTracker);
 		}
 	}
 
 	@Inject(method = "saveServerWorld", at = @At("TAIL"))
-	private void saveWorld(CallbackInfo ci)
+	private void fire_Star_MC$saveWorld(CallbackInfo ci)
 	{
-		for (CustomWorld customWorld : multiWorldList)
+		for (CustomWorld customWorld : fire_Star_MC$multiWorldList)
 		{
 			WorldServer world = customWorld.world;
 			world.saveWorld(true, null, true);
@@ -194,9 +197,9 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 	}
 
 	@Inject(method = "doTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/net/NetworkListenThread;handleNetworkListenThread()V", shift = At.Shift.BEFORE))
-	private void tickInject(CallbackInfo ci)
+	private void fire_Star_MC$tickInject(CallbackInfo ci)
 	{
-		for (CustomWorld customWorld : multiWorldList)
+		for (CustomWorld customWorld : fire_Star_MC$multiWorldList)
 		{
 			WorldServer worldserver = customWorld.world;
 
@@ -213,11 +216,11 @@ public abstract class MinecraftServerMixin implements IMinecraftServerMixin
 
 	public ArrayList<CustomWorld> fire_Star_MC$getCustomWorlds()
 	{
-		return multiWorldList;
+		return fire_Star_MC$multiWorldList;
 	}
 
 	@Inject(method = "startServer", at = @At("HEAD"))
-	private void staticInstanceMixin(CallbackInfoReturnable<Boolean> cir)
+	private void fire_Star_MC$staticInstanceMixin(CallbackInfoReturnable<Boolean> cir)
 	{
 		FireStarMC.mcServer = thisAs();
 	}
